@@ -1,0 +1,97 @@
+#!/bin/bash 
+if [ $# -gt 0 ] 
+then 
+if [ $1 == 's' ]
+	then 
+
+		# Actualizar el paquetes
+		sudo apt update
+
+		# instalar dependencias
+		sudo apt install -y apache2 mysql-server php php-mysql libapache2-mod-php php-cli php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip unzip
+
+		# Descargar wordpress
+
+		wget -c https://wordpress.org/latest.tar.gz
+		# extraer wordpress
+		tar -xzvf latest.tar.gz
+
+		# mover a la carpeta apache
+	sudo mv wordpress /var/www/html/
+
+		# otorgar permisos
+		sudo chown -R www-data:www_data /var/www/html/wordpress
+		sudo chmod -R 755 /var/www/html/wordpress
+
+		# crear database 
+		sudo mysql -e "CREATE DATABASE wordpress;"
+	sudo mysql -e "CREATE USER 'wordpressuser'@'localhost' IDENTIFIED BY 'password';"
+	sudo mysql -e "GRANT ALL ON wordpress.* TO 'wordpressuser'@'localhost';"
+	sudo mysql -e "	FLUSH PRIVILEGES;"
+
+		# configuracion de wordpress
+	sudo cp /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
+	sudo sed -i 's/database_name_here/wordpress/' /var/www/html/wordpress/wp-config.php
+	sudo sed -i 's/username_here/wordpressuser/' /var/www/html/wordpress/wp-config.php
+	sudo sed -i 's/password_here/password/' /var/www/html/wordpress/wp-config.php
+
+		# reiniciar apache 
+		sudo systemctl restart apache2 
+
+	else
+
+		echo "no se instalara el servidor"
+
+	fi
+		echo "muchas gracias"
+else 
+	echo "hola, este script instalara un servidor local con wordpress, desea continuar?(s/n)"
+	read a 
+	if [ $a == 's' ]
+		then
+			# Actualizar el paquetes
+			sudo apt update
+
+			# instalar dependencias
+			sudo apt install -y apache2 mysql-server php php-mysql libapache2-mod-php php-cli php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip unzip
+
+			# Descargar wordpress
+
+			wget -c https://wordpress.org/latest.tar.gz
+			# extraer wordpress
+			tar -xzvf latest.tar.gz
+
+			# mover a la carpeta apache
+			sudo mv wordpress /var/www/html/
+
+			# otorgar permisos
+			sudo chown -R www-data:www_data /var/www/html/wordpress
+			sudo chmod -R 755 /var/www/html/wordpress
+	
+			# crear database 
+			sudo mysql -e "CREATE DATABASE wordpress;"
+			sudo mysql -e "CREATE USER 'wordpressuser'@'localhost' IDENTIFIED BY 'password';"
+			sudo mysql -e "GRANT ALL ON wordpress.* TO 'wordpressuser'@'localhost';"
+		sudo mysql -e "	FLUSH PRIVILEGES;"
+
+			# configuracion de wordpress
+		sudo cp /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php
+		sudo sed -i 's/database_name_here/wordpress/' /var/www/html/wordpress/wp-config.php
+		sudo sed -i 's/username_here/wordpressuser/' /var/www/html/wordpress/wp-config.php
+		sudo sed -i 's/password_here/password/' /var/www/html/wordpress/wp-config.php
+
+			# reiniciar apache 
+			sudo systemctl restart apache2 
+
+		else
+
+		echo "no se instalara el servidor"
+
+		fi
+		echo "muchas gracias"
+
+
+fi 
+
+exit 0
+
